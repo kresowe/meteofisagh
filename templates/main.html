@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <p id="test"></p>
+    </div>
+    <div class="row" id="divForGMap">
+        <div id="googleMap" style="height:100vh;"></div>
+    </div>
+</div>
+<style>
+    #divForGMap {
+        margin-bottom: 20px;
+    }
+</style>
+<script>
+$(document).ready(function(){
+    $.getJSON('http://mech.fis.agh.edu.pl/meteo/rest/json/info/', function(result) {
+        initializeMap(result);
+    });
+
+
+    function initializeMap(result) {
+        var myCenter = new google.maps.LatLng(50.066855, 19.91309);
+        var mapProp = {
+            center: myCenter,
+            zoom: 9,
+            mapTypeId: google.maps.MapTypeId.TERRAIN
+        };
+        var mapDiv = document.getElementById('googleMap');
+        var map = new google.maps.Map(mapDiv, mapProp);
+
+        setMarkers(map, result);
+    }
+
+    function setMarkers(map, result) {
+        for (var i = 0; i < result.length; i++) {
+            coords = new google.maps.LatLng(result[i].lati, result[i].long);
+            stationName = result[i].name;
+            stationId = result[i].station;
+
+            var marker = new google.maps.Marker({
+                position: coords,
+                map: map,
+                title: stationName
+            });
+
+            var content = '<div class="mapInfoText"><h5>' + stationName + '</h5>';
+            content += '<p><a href="/station/' + stationId + '/">Zobacz pogodę w stacji</a></p>';
+            content += '</div>';
+            var infoWindow = new google.maps.InfoWindow();
+
+            google.maps.event.addListener(marker, 'click',
+                function(marker, content, infoWindow) {
+                    return function() {
+                        infoWindow.setContent(content);
+                        infoWindow.open(map, marker);
+                    };
+            }(marker, content, infoWindow));
+        }
+    }
+
+});
+</script>
+<!--<script src="{{ url_for('static', filename='stationsMap.js') }}"></script>-->
+{% endblock %}

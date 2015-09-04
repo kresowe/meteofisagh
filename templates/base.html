@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+  {%include 'head.html' %}
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="page-header">
+        <!--<a href="/"><img src="/var/www/meteofisagh/.env/static/images/meteo-logo1.png"></a>-->
+        <h1>[Page header - {{ page_name }}]</h1>
+      </div>
+    </div>
+  </header>
+  {% include 'navbar.html' %}
+  <section>
+    {% block section %}
+    {% endblock %}
+  </section>
+  <article>
+    {% block content %}
+    {% endblock %}
+  </article>
+  <footer>
+    {% block footer %}
+    {% endblock %}
+  </footer>
+
+</body>
+</html>

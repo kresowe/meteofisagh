@@ -1,0 +1,24 @@
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse"
+                    data-target="#navbar-content">
+                <i class="fa fa-bars"></i>
+            </button>
+            <a class="navbar-brand" href="/">{{ page_name }}</a>
+        </div>
+        <div class="collapse navbar-collapse" id="navbar-content">
+            <ul class="nav navbar-nav">
+                <li><a href="{{ url_for('about') }}">O projekcie</a></li>
+                <li><a href="#">Kontakt</a></li>
+                <li><a href="#">Lista stacji</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<style>
+    .fa.fa-bars {
+        color: white;
+    }
+</style>

@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}Strona nie istnieje - {% endblock %}
+{% block content %}
+<div class="container">
+    <h2>Strona nie została znaleziona</h2>
+    <p>Strona o podanym adresie nie istnieje.</p>
+    <p>Przejdź na naszą wspaniałą <a href="{{ url_for('main_page') }}">stronę główną</a>.</p>
+</div>
+{% endblock %}

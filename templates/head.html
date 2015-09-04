@@ -1,0 +1,20 @@
+<!-- CSS -->
+<!-- Bootstap -->
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+<!-- FontAwesome -->
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
+<!-- My CSS-->
+<link rel="stylesheet" href=" {{ url_for('static', filename='style.css') }} ">
+
+<!-- JS -->
+<!-- jQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<!-- Bootstap js -->
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<!-- GoogleMaps -->
+<script src="http://maps.googleapis.com/maps/api/js"></script>
+<!-- change for:
+<script src="http://maps.googleapis.com/maps/api/js?key=YOUR_KEY"></script>
+-->
+
+<title>{% block title %}{% endblock %}{{ page_name }}</title>

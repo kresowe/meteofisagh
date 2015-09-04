@@ -10,7 +10,9 @@ I replaced 'mysite' with 'meteofisagh'.
 
 ### Cope with problems
 The only other things you may need to do is to edit your `/etc/hosts` for example by
-`sudo vi /etc/hosts`
+```
+sudo vi /etc/hosts
+```
 and add lines like this:
 ```
 0.0.0.0         meteofisagh.com

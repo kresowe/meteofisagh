@@ -2,11 +2,22 @@
 {% block title %}Stacja {{ station_id }} - {% endblock %}
 {% block content %}
 <div class="container">
-    <h2>Pogoda w stacji {{ station_id }}: <span id="stationName"></span></h2>
+    <h2>Pogoda w stacji {{ station_id }}: <span id="stationName"></span>
+        (<span id="stationAltitude"></span> m n.p.m.)
+    </h2>
     <p class="myInvisible" style="display:none;">{{ station_id }}</p>
-    <h4>Ostatni pomiar:</h4>
-    <p><strong>Godzina: </strong><span id="time"></span></p>
-    <p><strong>Temperatura: </strong><span id="ta"></span> &deg;C</p>
+    <h3>Ostatni pomiar:</h3>
+    
+    <table class="table table-hover table-striped">
+        <tr><td><strong>Godzina: </strong></td><td><span id="time"></span></td></tr>
+        <tr><td><strong>Temperatura: </strong></td><td><span id="ta"></span> &deg;C</td></tr>
+        <tr><td><strong>Ciśnienie zredukowane do poziomu morza: </strong></td><td><span id="p0"></span> hPa</td></tr>
+        <tr><td><strong>Opad w ostatniej godzinie: </strong></td><td><span id="r1"></span> mm</td></tr>
+        <tr><td><strong>Prędkość wiatru: </strong></td><td><span id="ws"></span> m/s</td></tr>
+    </table>
+
+    <div id="temperatureChart" style="width:100%; height:400px;"></div>
+    
 </div>
 <script>
 $(document).ready(function(){
@@ -16,15 +27,91 @@ $(document).ready(function(){
         for (var i = 0; i < result.length; i++) {
             if (result[i].station == stationId) {
                 $("#stationName").text(result[i].name);
+                $("#stationAltitude").text(result[i].alti);
                 break;
             }
         }
     });
 
     $.getJSON('http://mech.fis.agh.edu.pl/meteo/rest/json/last/' + stationId, function(result) {
-        $('#time').text(result[0].time);
-        $('#ta').text(result[0].data.ta);
+        console.log(result);
+        presentLastDataInTable(result);
+        makeTemperatureChart(result);
     });
+
+    function presentLastDataInTable(result) {
+        $('#time').text(result[0].utc);
+        $('#ta').text(result[0].data.ta);
+        $('#p0').text(result[0].data.p0);
+        $('#r1').text(result[0].data.r1);
+        $('#ws').text(result[0].data.ws);
+    }
+
+    function prepareTime(theTime) {
+        var dateTime = Date.UTC(
+            theTime.slice(0, 4), //year
+            theTime.slice(5, 7) - 1, //month
+            theTime.slice(8, 10), //day
+            theTime.slice(11, 13), //hour
+            theTime.slice(14, 16), //minute
+            theTime.slice(17) //second
+        );
+        return dateTime;
+    }
+
+    function makeTemperatureChart(result) {
+        var temperatureData = [];
+        for (var i = result.length - 1; i >= 0; i--) {
+            var time = prepareTime(result[i].utc);
+            if (result[i].data.ta != null) {
+                var temperature = parseFloat(result[i].data.ta);
+                temperatureData.push([time, temperature]);
+            }
+        }
+
+        temperatureData.sort(function(a, b) {
+            return (a[0] - b[0]);
+        });
+
+        console.log(temperatureData);
+
+        /*var firstTime = result[result.length - 1].time;
+        var timeStart = Date.UTC(
+            firstTime.slice(0, 4), //year
+            firstTime.slice(5, 7), //month
+            firstTime.slice(8, 10), //day
+            firstTime.slice(11, 13), //hour
+            firstTime.slice(14, 16), //minute
+            firstTime.slice(17) //second
+        );*/
+
+        var temperatureChart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'temperatureChart',
+                type: 'line'
+            },
+            title: {
+                text: 'Temperatura'
+            },
+            subtitle: {
+                text: 'Ostatnie pomiary'
+            },
+            xAxis: {
+                type: 'datetime'
+            },
+            yAxis: {
+                title: {
+                    text: 'Temperatura (st. C)'
+                }
+            },
+            series: [{
+                data: temperatureData/*,
+                pointStart: timeStart,
+                pointInterval: 60 * 1000 //one minute */
+            }]
+        });
+    }
+
 });
 </script>
 {% endblock %}
